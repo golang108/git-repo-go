@@ -2,6 +2,7 @@ package project
 
 import (
 	"fmt"
+	"github.com/alibaba/git-repo-go/config"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -39,8 +40,9 @@ func (v *Project) GitInit() error {
 
 	objectsRepo := v.ObjectsRepository()
 	if objectsRepo != nil && v.GitDir != objectsRepo.GitDir {
-		objectsRepo.Init("", "", "")
-		v.Repository.InitByLink(v.RemoteName, remoteURL, objectsRepo)
+		objectsRepo.Init("", "", "") // init git under project-objects path
+		objectsRepo.InitHooks()
+		v.Repository.InitByLink(v.RemoteName, remoteURL, objectsRepo) // init git with link under projects path
 	} else {
 		v.Repository.Init(v.RemoteName, remoteURL, referenceGitDir)
 	}
@@ -145,9 +147,6 @@ func (v *Repository) Init(remoteName, remoteURL, referenceGitDir string) error {
 		v.setAlternates(referenceGitDir)
 	}
 
-	// TODO: Link hooks files in ../hooks/ dir to repository's hook dir.
-	// TODO: Only copy 'commit-msg' hook, when: 1. gerrit mode, 2. defined v.Remote.Review
-
 	return nil
 }
 
@@ -196,5 +195,22 @@ func (v *Repository) InitByLink(remoteName, remoteURL string, repo *Repository) 
 	// Create config file
 	v.Init(remoteName, remoteURL, "")
 
+	return nil
+}
+
+func (v *Repository) InitHooks() error {
+	hookdir, err := config.GetRepoHooksDir()
+	if err != nil {
+		return fmt.Errorf("fail to get hook path %s", err)
+	}
+
+	for name, _ := range config.GerritHooks {
+		target := filepath.Join(v.GitDir, "hooks", name)
+		source := filepath.Join(hookdir, name)
+		err = os.Symlink(source, target)
+		if err != nil {
+			return fmt.Errorf("fail to set link for hook %s: %s", name, err)
+		}
+	}
 	return nil
 }
