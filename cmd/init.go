@@ -55,6 +55,9 @@ type initCommand struct {
 		Platform          string
 		Reference         string
 		Submodules        bool
+		RepoURL           string
+		RepoBranch        string
+		NoRepoVerify      bool
 	}
 }
 
@@ -137,6 +140,22 @@ func (v *initCommand) Command() *cobra.Command {
 		"no-tags",
 		false,
 		"don't fetch tags in the manifest")
+	// tool
+	v.cmd.Flags().StringVarP(&v.O.RepoURL,
+		"repo-url",
+		"",
+		"",
+		"repo repository location")
+	v.cmd.Flags().StringVarP(&v.O.RepoBranch,
+		"repo-branch",
+		"",
+		"",
+		"repo branch or revision")
+	v.cmd.Flags().BoolVar(&v.O.NoRepoVerify,
+		"no-repo-verify",
+		false,
+		"do not verify repo source code")
+	// other
 	v.cmd.Flags().BoolVar(&v.O.ConfigName,
 		"config-name",
 		false,
@@ -223,7 +242,7 @@ func (v initCommand) Execute(args []string) error {
 		if v.O.ManifestURL == "" {
 			log.Fatal("option --manifest-url (-u) is required")
 		}
-		ws, err = workspace.NewEmptyRepoWorkSpace(topDir, v.O.ManifestURL)
+		ws, err = workspace.NewRepoWorkSpace(topDir, v.O.ManifestURL)
 		v.ws = ws
 		if err != nil {
 			return err
@@ -232,7 +251,7 @@ func (v initCommand) Execute(args []string) error {
 		// Reload settings
 		ws.ManifestProject.ReadSettings()
 	} else {
-		ws, err = workspace.NewRepoWorkSpace(topDir)
+		ws, err = workspace.NewRepoWorkSpace(topDir, "nil")
 		v.ws = ws
 		if err != nil {
 			return err
