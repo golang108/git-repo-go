@@ -696,10 +696,14 @@ func (v *RepoWorkSpace) removeEmptyDirs(dir string) {
 // 1. Searching a hidden `.repo` directory in `<dir>` or any parent directory.
 // 2. Returns a RepoWorkSpace objects based on the toplevel directory of workspace.
 // 3. If cannot find valid repo workspace, return ErrRepoDirNotFound error.
-func NewRepoWorkSpace(dir string) (*RepoWorkSpace, error) {
+func NewRepoWorkSpace(dir string, manifestURL string) (*RepoWorkSpace, error) {
 	var (
 		err error
 	)
+
+	if manifestURL != "" {
+		return emptyRepoWorkSpace(dir, manifestURL)
+	}
 
 	topDir, err := path.FindTopDir(dir)
 	if err != nil {
@@ -710,7 +714,7 @@ func NewRepoWorkSpace(dir string) (*RepoWorkSpace, error) {
 }
 
 // NewEmptyRepoWorkSpace returns empty workspace for new created workspace.
-func NewEmptyRepoWorkSpace(dir, manifestURL string) (*RepoWorkSpace, error) {
+func emptyRepoWorkSpace(dir, manifestURL string) (*RepoWorkSpace, error) {
 	var (
 		err error
 	)

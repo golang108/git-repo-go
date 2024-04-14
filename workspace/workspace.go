@@ -39,5 +39,5 @@ func NewWorkSpace(dir string) (WorkSpace, error) {
 	if config.IsSingleMode() {
 		return NewGitWorkSpace(dir)
 	}
-	return NewRepoWorkSpace(dir)
+	return NewRepoWorkSpace(dir, "")
 }

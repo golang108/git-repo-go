@@ -251,7 +251,7 @@ func (v initCommand) Execute(args []string) error {
 		// Reload settings
 		ws.ManifestProject.ReadSettings()
 	} else {
-		ws, err = workspace.NewRepoWorkSpace(topDir, "nil")
+		ws, err = workspace.NewRepoWorkSpace(topDir, "")
 		v.ws = ws
 		if err != nil {
 			return err

@@ -59,7 +59,7 @@ func (v *WorkSpaceCommand) WorkSpace() workspace.WorkSpace {
 func (v *WorkSpaceCommand) RepoWorkSpace() *workspace.RepoWorkSpace {
 	var err error
 	if v.rws == nil {
-		v.rws, err = workspace.NewRepoWorkSpace("")
+		v.rws, err = workspace.NewRepoWorkSpace("", "")
 		if err != nil {
 			log.Fatal(err)
 		}

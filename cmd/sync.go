@@ -172,7 +172,7 @@ func (v *syncCommand) Command() *cobra.Command {
 func (v *syncCommand) manifestsDefaultJobs() int {
 	var nJobs int
 
-	rws, _ := workspace.NewRepoWorkSpace("")
+	rws, _ := workspace.NewRepoWorkSpace("", "")
 	if rws != nil &&
 		rws.Manifest != nil &&
 		rws.Manifest.Default != nil &&

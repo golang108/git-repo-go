@@ -103,7 +103,7 @@ func TestNewLoadEmptyRepoWorkSpace(t *testing.T) {
 	err = os.MkdirAll(workdir, 0755)
 	assert.Nil(err)
 
-	ws, err := NewRepoWorkSpace(workdir)
+	ws, err := NewRepoWorkSpace(workdir, "")
 	assert.Equal(errors.ErrRepoDirNotFound, err)
 	assert.Nil(ws)
 }
@@ -158,7 +158,7 @@ func TestLoadRepoWorkSpace(t *testing.T) {
 	assert.Nil(err)
 
 	// No symlink: manifest.xml and no manifests/default.xml
-	ws, err := NewRepoWorkSpace(workdir)
+	ws, err := NewRepoWorkSpace(workdir, "")
 	assert.NotNil(err)
 	assert.Nil(ws)
 
@@ -167,7 +167,7 @@ func TestLoadRepoWorkSpace(t *testing.T) {
 	target := filepath.Join(workdir, ".repo", "manifest.xml")
 	err = os.Symlink(src, target)
 	assert.Nil(err)
-	ws, err = NewRepoWorkSpace(workdir)
+	ws, err = NewRepoWorkSpace(workdir, "")
 	assert.Nil(err)
 	assert.NotNil(ws.Manifest)
 	assert.Equal(3, len(ws.Projects))
