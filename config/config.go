@@ -45,7 +45,7 @@ var (
 const (
 	GIT = "git"
 
-	DefaultConfigDir = ".git-repo"
+	DefaultConfigDir = ".repoconfig"
 	DefaultLogRotate = 20 * 1024 * 1024
 	DefaultLogLevel  = "warn"
 
