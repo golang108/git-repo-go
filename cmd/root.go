@@ -194,10 +194,10 @@ func (v rootCommand) checkGitVersion() {
 func (v rootCommand) installConfigFiles() {
 	var err error
 
-	err = config.InstallExtraGitConfig()
-	if err != nil {
-		log.Error(err)
-	}
+	//err = config.InstallExtraGitConfig() TODO一个gitconfig文件的，暂时去掉没啥用
+	//if err != nil {
+	//	log.Error(err)
+	//}
 	err = config.InstallRepoHooks()
 	if err != nil {
 		log.Error(err)
@@ -214,7 +214,7 @@ func (v rootCommand) initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		configDir, err := config.GetConfigDir()
+		configDir, err := config.GetConfigDir() //$HOME/.repoconfig
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -226,7 +226,7 @@ func (v rootCommand) initConfig() {
 		viper.SetConfigName(filepath.Base(filename))
 	}
 
-	viper.SetConfigType("yaml")
+	viper.SetConfigType("ini")
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err != nil {
